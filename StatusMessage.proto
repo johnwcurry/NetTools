@@ -1,0 +1,52 @@
+syntax = "proto3";
+message BoxDate
+{
+	int32 Year = 1;
+	int32 Month = 2;
+	int32 Day = 3;
+	int32 Hour = 4;
+	int32 Minute = 5;
+	int32 Second = 6;
+	bool NewTimePresent = 7;
+
+}
+message PortStatus
+{
+	int32 Sent = 1;
+	int32 Received = 2;
+	int32 CrcErr = 3;
+	int32 BadPkt = 4;
+	int32 UuidErr = 5;
+	int32 UnknownErr = 6;
+	int32 UnknownMsg = 7;
+	BoxDate LastErrTime = 8;
+}
+
+message StatusInfo
+{
+	 string SecWallUuid = 1;
+	 string SecWallName  = 2;
+	 bool NewSecWallNamePresent = 3;
+	 string IpAddrRx = 4;
+	 bool NewIpRxPresent = 5;
+	 string NetMaskRx = 6;
+	 bool NewRxMaskPresent = 7;
+	 int32 PortRx = 8;
+	 bool NewPortRxPresent = 9;
+	 string GatewayRx = 10;
+	 bool NewGatewayRxPresent = 11;
+	 string IpAddrTx = 12;
+	 bool NewIpTxPresent = 13;
+	 string NetMaskTx = 14;
+	 bool NewTxMaskPresent = 15;
+	 int32 PortTx = 16;
+	 bool NewPortTxPresent = 17;
+	 string GatewayTx = 18;
+	 bool NewGatewayTxPresent = 19;
+	 BoxDate CurrentDate = 20;
+	 PortStatus McastStatus = 21;
+	 string MulticastListenAddr = 22;
+	 int32 MulticastListenPort = 23;
+	 int32 TcpListenPortRx = 24;
+	 int32 TcpSendPortTx = 25;
+}

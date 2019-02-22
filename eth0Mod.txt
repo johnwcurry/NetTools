@@ -1,0 +1,81 @@
+sudo nano /etc/default/grub
+First lets grab a text editor.
+
+sudo yum install nano
+
+Next we need to disable the new interface naming rule. We do this by editing GRUB
+
+sudo nano /etc/default/grub
+
+ 
+
+Add
+
+net.ifnames=0
+
+on the line that reads:
+
+“GRUB_CMDLINE_LINUX=”rd.lvm.lv=centos/swap vconsole.font=latarcyrheb-sun16 rd.lvm.lv=centos/root crashkernel=auto  vconsole.keymap=us net.ifnames=0 <—— add this in the exact same spot, and leave everything after it where it is.
+
+save the file with keystrokes “CTRL + X, “Y”, [ENTER]
+
+Now we need to regenerate GRUB with this command:
+
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+
+ 
+
+Next lets re-create the old renaming rules. First create this file if it does not exist.
+
+sudo nano /etc/udev/rules.d/70-persistent-net.rules
+
+Within this file add a line like this for each interface on your machine.
+
+SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="xx:xx:xx:xx:xx:xx", ATTR{type}=="1", KERNEL=="eth*", NAME="eth0"
+
+SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="xx:xx:xx:xx:xx:xx", ATTR{type}=="1", KERNEL=="eth*", NAME="eth1"
+
+So if your machine has two interfaces you would have two lines like above. Make sure you change the xx:xx:xx:xx:xx:xx to the corresponding interfaces mac address & you change the name at the end of the line to match the next interface (eth0, eth1, eth2…)
+
+So now we have fixed the naming rules for when your machine boots. What about the names already configured?
+
+Lets take care of those next.
+
+Move into the folder that contains the interfaces config files:
+
+cd /etc/sysconfig/network-scripts
+
+If we list the files in this folder we will see the current ones, they are the ones with the name of the interface preceded by “ifcfg-” so if your current interface is called eno1, its config file is listed in this folder as “ifcfg-eno1”
+
+We need to change these to match the new rules we created… so:
+
+cp ifcfg-eno1 ifcfg-eth0
+
+this will copy the config file to a new name “ifcfg-eth0”
+
+now lets delete the old config file:
+
+rm ifcfg-eno1
+
+you will be asked to confirm this deletion, it is ok to do so because we copied it to a new file.
+
+Now lets change a few things in the newly named file to match our new config.
+
+nano ifcfg-eth0
+
+this will bring up the text editor and open the config file.
+
+in here you want to change the “name=eno1” field to make it say:
+
+name="eth0"
+
+Finally, even though its deprecated, you can get “ifconfig” back with.
+
+sudo yum install net-tools
+
+That is it!
+
+reboot and when your server comes back up it will have eth0 and eth1 instead of eno..
+
+Do this on all the servers in your application that is sensitive to interface name changes and you will be fine to use CentOS 7
+
