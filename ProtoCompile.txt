@@ -1,0 +1,1 @@
+protoc -I=/home/johnwcurry/ScadaFuse/NetTools --cpp_out=/home/johnwcurry/ScadaFuse/NetTools/src-gen /home/johnwcurry/ScadaFuse/NetTools/StatusMessage.proto
